@@ -9,6 +9,9 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: silent
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,17 +34,17 @@ jobs:
         run: npm run build
 
       - name: Add Android platform
-        run: npx cap add android
+        run: npx cap add android || true
 
       - name: Sync Capacitor
         run: npx cap sync android
 
       - name: Build debug APK
-        working-directory: android
+        working-directory: silent/android
         run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: silent-hill-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: silent/android/app/build/outputs/apk/debug/app-debug.apk
